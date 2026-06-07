@@ -3,6 +3,7 @@ let lastNum = 0;
 let operator = "";
 let last = false;
 let secondOperator = false;
+let equalTriggered = false;
 let secondNum = ""
 
 function add(a, b) {
@@ -36,7 +37,7 @@ function operate(firstNum, lastNum, operator) {
         return divide(firstNum, lastNum)
 }
 
-const numbers = "0123456789";
+const numbers = "0123456789.";
 const operators = "+-*/";
 const arrNumbers = numbers.split("");
 const display = document.getElementById("display");
@@ -45,8 +46,16 @@ const buttons = document.querySelectorAll("button");
 buttons.forEach((button) => {
     button.addEventListener("click", (e) => {
         if (arrNumbers.includes(e.target.textContent) && !(operators.includes(e.target.textContent)) && last === false) {
-            display.textContent+= e.target.textContent;
-            firstNum = Number(display.textContent);
+            if (equalTriggered === true) {
+                display.textContent = ""
+                equalTriggered = false;
+            }
+            if (!(display.textContent.includes(".") && e.target.textContent === ".")) {
+                if (e.target.textContent === "." && display.textContent === "")
+                    return;
+                display.textContent+= e.target.textContent;
+                firstNum = Number(display.textContent);
+            }
         }
         else if (operators.includes(e.target.textContent) && last === false) {
             display.textContent+= e.target.textContent;
@@ -54,10 +63,18 @@ buttons.forEach((button) => {
             last = true;
         }
         else if (arrNumbers.includes(e.target.textContent) && !(operators.includes(e.target.textContent)) && last === true) {
-            display.textContent += e.target.textContent;
-            secondNum += e.target.textContent; 
-            lastNum = Number(secondNum);
-            secondOperator = true
+            if (secondNum === "" && operators.includes(e.target.textContent)) {
+                display.textContent+= display.textContent.slice(0, display.textContent.length -1) + e.target.textContent;
+                operator = e.target.textContent;
+            }
+            else  if (!(secondNum.includes(".") && e.target.textContent === "." )) {
+                if (e.target.textContent === "." && secondNum === "")
+                    return;
+                display.textContent += e.target.textContent;
+                secondNum += e.target.textContent; 
+                lastNum = Number(secondNum);
+                secondOperator = true
+            }
         }
         else if (e.target.textContent === "=" && last === true) {
             if (!(secondNum === "")) {
@@ -69,6 +86,7 @@ buttons.forEach((button) => {
                 secondNum = "";
                 lastNum = 0;
                 operator = "";
+                equalTriggered = true;
                 console.log(firstNum)
                 console.log(lastNum)
                 console.log(operator)
