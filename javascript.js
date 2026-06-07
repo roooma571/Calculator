@@ -4,6 +4,7 @@ let operator = "";
 let last = false;
 let secondOperator = false;
 let equalTriggered = false;
+let delOperator = false
 let secondNum = ""
 
 function add(a, b) {
@@ -101,9 +102,6 @@ buttons.forEach((button) => {
             lastNum = 0;
             operator = e.target.textContent;
             display.textContent += e.target.textContent;
-            console.log(firstNum)
-            console.log(lastNum)
-            console.log(operator)
         }
         else if (e.target.textContent === "clear") {
             display.textContent = "";
@@ -114,8 +112,25 @@ buttons.forEach((button) => {
             last = false;
             secondOperator = false;
         }
-            console.log(firstNum)
-            console.log(lastNum)
-            console.log(operator)
+        else if (e.target.textContent === "⌫") {
+            if (operators.includes(display.textContent.slice(display.textContent.length - 1))) {
+                last = false;
+                delOperator = true;
+            };
+            display.textContent = display.textContent.slice(0, display.textContent.length - 1);
+            if (delOperator === true) {
+                operator = "";
+                delOperator = false;
+            }
+            else if (last === false)
+                firstNum = Number(display.textContent);
+            else {
+                secondNum = secondNum.slice(0, secondNum.length - 1); 
+                lastNum = Number(secondNum);
+            }
+        }
+        console.log(firstNum)
+        console.log(lastNum)
+        console.log(operator)
     });
 });
